@@ -9,8 +9,11 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +54,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
-        Toast.makeText(this, "Registration to be implemented", Toast.LENGTH_SHORT).show()
+        val edt_email = findViewById<EditText>(R.id.edt_email)
+        val edt_textPassword = findViewById<EditText>(R.id.edt_textPassword)
+        val email = edt_email.text.toString()
+        val password = edt_textPassword.text.toString()
+        if(email.isEmpty() && password.isEmpty()){
+            Toast.makeText(this, "Enter All details", Toast.LENGTH_SHORT).show()
+            return
+        }
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
+            .addOnCompleteListener{
+                if(!it.isSuccessful){
+                    Toast.makeText(this, "Registration not successful", Toast.LENGTH_SHORT).show()
+                    return@addOnCompleteListener
+                }
+                Log.i("SKHST","Successfully created user with uid ${it.result?.user?.uid}")
+                Toast.makeText(this, "Registration Success", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to create user", Toast.LENGTH_SHORT).show()
+                Log.i("SKHST","Failed to create user ${it.message}")
+            }
     }
 }
