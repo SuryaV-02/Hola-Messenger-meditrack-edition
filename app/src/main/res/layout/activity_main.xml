@@ -78,7 +78,7 @@
         android:ems="10"
         android:textColorHint="@color/absolute_white"
         android:textColor="@color/absolute_white"
-        android:inputType="textPassword"
+        android:inputType="textVisiblePassword"
         android:hint="Password"
         android:layout_marginVertical="5dp"
         android:background="@drawable/edit_text_bg"
