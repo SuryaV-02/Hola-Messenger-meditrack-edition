@@ -13,9 +13,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    var selectedPhotoUri : Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(i,0)
         }
     }
-    var selectedPhotoUri : Uri? = null
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null){
@@ -70,10 +74,46 @@ class MainActivity : AppCompatActivity() {
                 }
                 Log.i("SKHST","Successfully created user with uid ${it.result?.user?.uid}")
                 Toast.makeText(this, "Registration Success", Toast.LENGTH_SHORT).show()
+                uploadImageToFirebaseStorage()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to create user", Toast.LENGTH_SHORT).show()
                 Log.i("SKHST","Failed to create user ${it.message}")
             }
     }
+    fun uploadImageToFirebaseStorage(){
+        if(selectedPhotoUri == null) return
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                Log.i("SKHST","SUCCESS Image Upload to Storage ${it.metadata?.path}")
+                ref.downloadUrl
+                    .addOnSuccessListener {
+                        Log.i("SKHST","File Location : $it")
+                        SaveUserToFirebaseDatabase(it.toString())
+                    }
+            }
+            .addOnFailureListener{
+                Log.i("SKHST","FAILED Image Upload to Storage ${it.message}")
+            }
+
+    }
+    fun SaveUserToFirebaseDatabase(profileImageUrl : String){
+        val uid = FirebaseAuth.getInstance().uid ?: ""
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+
+        val username = findViewById<EditText>(R.id.edt_name).text.toString()
+        val user = User(uid,username,profileImageUrl)
+        ref.setValue(user)
+            .addOnSuccessListener {
+                Log.i("SKHST","SUCCESS Finally we saved data to Database SKHST!!!")
+            }
+            .addOnFailureListener {
+                Log.i("SKSHT","FAILED to upload to database ${it.message}")
+            }
+
+
+    }
 }
+class User(val uid : String, val username : String, val profileImageUrl: String)
