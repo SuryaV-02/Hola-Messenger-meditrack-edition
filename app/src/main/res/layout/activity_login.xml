@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/bg_black"
+    >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:fontFamily="@font/arizonia"
+        android:text="Messenger"
+        android:textColor="@color/absolute_white"
+        android:textSize="50dp" />
+    <EditText
+        android:id="@+id/edt_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:textColorHint="@color/absolute_white"
+        android:textColor="@color/absolute_white"
+        android:background="@drawable/edit_text_bg"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="265dp" />
+    <EditText
+        android:id="@+id/edt_textPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textColorHint="@color/absolute_white"
+        android:textColor="@color/absolute_white"
+        android:inputType="textPassword"
+        android:hint="Password"
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/edit_text_bg"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="265dp" />
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_marginVertical="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_bg"
+        android:text="Login"
+        android:ems="10"
+        android:textColor="@color/absolute_white"
+        />
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to register"
+        android:textColor="@color/absolute_white"
+        />
+
+
+</LinearLayout>
