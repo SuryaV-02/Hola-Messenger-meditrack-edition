@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "479781244229",
+    "project_id": "holafirebase-85245",
+    "storage_bucket": "holafirebase-85245.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479781244229:android:6532add119b862317d022c",
+        "android_client_info": {
+          "package_name": "com.example.holamessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479781244229-krtct5jhgq7bv1tp9l156o9qnkp75muk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAyysQ-z-Ik_P-fsM2AnV5eBk67qv6SUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479781244229-krtct5jhgq7bv1tp9l156o9qnkp75muk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
