@@ -1,0 +1,27 @@
+class NewMessageActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_new_message)
+        supportActionBar?.title = "Select User"
+        val rv_newmessage = findViewById<RecyclerView>(R.id.rv_newmessage)
+        val adapter = GroupAdapter<GroupieViewHolder>()
+
+        adapter.add(userItem())
+        adapter.add(userItem())
+        adapter.add(userItem())
+        adapter.add(userItem())
+
+
+        rv_newmessage.adapter = adapter
+    }
+}
+
+class userItem : Item<GroupieViewHolder>(){
+    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        //will be called for each user in the list later on
+    }
+
+    override fun getLayout(): Int {
+// cerate a layout, that represent every row in the recycleview
+        return R.layout.user_row_new_message
+    }

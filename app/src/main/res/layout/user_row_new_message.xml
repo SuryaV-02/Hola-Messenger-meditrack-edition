@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@color/surface_black"
+    android:gravity="center"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_profilePic"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="50dp"
+        />
+    <TextView
+        android:id="@+id/tv_profileName"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:gravity="left"
+        android:layout_height="wrap_content"
+        android:text="Sri Kalahasthieeshwarar"
+        android:textColor="@color/absolute_white"
+        android:textSize="16dp"
+
+        />
+</LinearLayout>
