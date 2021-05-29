@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.i("SKHST","SUCCESS Finally we saved data to Database SKHST!!!")
+                val intent = Intent(this,LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
             .addOnFailureListener {
                 Log.i("SKSHT","FAILED to upload to database ${it.message}")

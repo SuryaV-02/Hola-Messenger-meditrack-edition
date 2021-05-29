@@ -1,5 +1,6 @@
 package com.example.holamessenger
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -41,6 +42,9 @@ class login : AppCompatActivity() {
                 if (!it.isSuccessful) return@addOnCompleteListener
                 Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
                 Log.i("SKHST", "Successfully logged in: ${it.result?.user?.uid}")
+                val intent = Intent(this,LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to log in: ${it.message}", Toast.LENGTH_SHORT).show()
