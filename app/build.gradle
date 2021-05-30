@@ -3,6 +3,10 @@ plugins {
     id 'kotlin-android'
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
+androidExtensions{
+    experimental=true
+}
 
 android {
     compileSdkVersion 30
