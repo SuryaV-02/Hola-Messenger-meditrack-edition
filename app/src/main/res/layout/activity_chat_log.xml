@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatLogActivity"
+    android:orientation="vertical"
+    android:background="@color/bg_black"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chatLog"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:weightSum="20"
+        android:background="@color/bg_black"
+        >
+        <EditText
+            android:id="@+id/edt_message"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:inputType="textPersonName"
+            android:paddingHorizontal="15dp"
+            android:hint="Enter your message"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:background="@drawable/edit_text_bg"
+            android:layout_weight="19"
+             />
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="send"
+            tools:layout_editor_absoluteX="310dp"
+            tools:layout_editor_absoluteY="676dp"
+            tools:ignore="MissingConstraints"
+            android:background="@drawable/button_bg"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+
+</LinearLayout>

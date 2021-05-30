@@ -1,5 +1,6 @@
 package com.example.holamessenger
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,16 +21,7 @@ class NewMessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_message)
         supportActionBar?.title = "Select User"
-//        val rv_newmessage = findViewById<RecyclerView>(R.id.rv_newmessage)
-//        val adapter = GroupAdapter<GroupieViewHolder>()
-//
-//        adapter.add(userItem())
-//        adapter.add(userItem())
-//        adapter.add(userItem())
-//        adapter.add(userItem())
-//
-//
-//        rv_newmessage.adapter = adapter
+
         fetchUsersFromFirebaseDatabase()
 
     }
@@ -47,7 +39,13 @@ class NewMessageActivity : AppCompatActivity() {
                     if(user!=null){
                         adapter.add(userItem(user))
                     }
+                    adapter.setOnItemClickListener { item, view ->
+                        val intent = Intent(view.context,ChatLogActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                     rv_newmessage.adapter = adapter
+
                 }
             }
 

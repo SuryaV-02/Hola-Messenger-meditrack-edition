@@ -5,10 +5,12 @@
         android:id="@+id/menu_newMessage"
         android:title="New Message"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/chat"
         />
     <item
         android:id="@+id/menu_signout"
         android:title="Signout"
+        android:icon="@drawable/signout"
         app:showAsAction="ifRoom"
         />
 </menu>

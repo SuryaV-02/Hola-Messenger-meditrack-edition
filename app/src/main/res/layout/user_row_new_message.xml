@@ -21,7 +21,7 @@
         android:layout_marginLeft="15dp"
         android:gravity="left"
         android:layout_height="wrap_content"
-        android:text="Sri Kalahasthieeshwarar"
+        android:text="User Name"
         android:textColor="@color/absolute_white"
         android:textSize="16dp"
 
