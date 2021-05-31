@@ -11,16 +11,16 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import kotlin.math.log
 
 class ChatLogActivity : AppCompatActivity() {
     companion object{
         val MESSAGETAG = "MessageLog"
     }
+    var toUser : User? = null
     val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +35,8 @@ class ChatLogActivity : AppCompatActivity() {
             Log.i(MESSAGETAG,"Attempt to send message")
             performSendMessage()
         }
-
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = user?.username
+        toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        supportActionBar?.title = toUser?.username
 //        setupDummyChatLogs()
 
     }
@@ -77,7 +76,7 @@ class ChatLogActivity : AppCompatActivity() {
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
                         adapter.add(ChatFromItem(chatMessage.message))
                     }else{
-                        adapter.add(ChatToItem(chatMessage.message))
+                        adapter.add(ChatToItem(chatMessage.message,toUser!!))
                     }
 
                 }
@@ -101,19 +100,6 @@ class ChatLogActivity : AppCompatActivity() {
 
         })
     }
-
-
-    private fun setupDummyChatLogs(){
-        val rv_chatLog =findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_chatLog)
-        val adapter = GroupAdapter<GroupieViewHolder>()
-
-        adapter.add(ChatFromItem("From"))
-        adapter.add(ChatToItem("to"))
-        adapter.add(ChatFromItem("frohere"))
-        adapter.add(ChatToItem("To hero"))
-
-        rv_chatLog.adapter =adapter
-    }
 }
 
 class ChatFromItem(val text : String): Item<GroupieViewHolder>(){
@@ -126,9 +112,13 @@ class ChatFromItem(val text : String): Item<GroupieViewHolder>(){
     }
 }
 
-class ChatToItem(val text : String) : Item<GroupieViewHolder>(){
+class ChatToItem(val text: String, val user: User) : Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.tv_chatToRow).text = text
+        val uri = user.profileImageUrl
+        val targetImageVIew = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_toUser)
+        Picasso.get().load(uri).into(targetImageVIew)
+
 
     }
     override fun getLayout(): Int {

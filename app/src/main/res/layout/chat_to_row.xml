@@ -8,8 +8,8 @@
     android:layout_marginBottom="12dp"
     >
 
-    <ImageView
-        android:id="@+id/imageView"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_toUser"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="4dp"
@@ -30,8 +30,8 @@
         android:paddingVertical="16dp"
         android:text="What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to make a type specimen book it has?"
         android:textColor="@color/absolute_white"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/iv_toUser"
         app:layout_constraintHorizontal_bias="0.967"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
+        app:layout_constraintTop_toTopOf="@+id/iv_toUser" />
 </androidx.constraintlayout.widget.ConstraintLayout>
