@@ -2,34 +2,123 @@ package com.example.holamessenger
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlin.math.log
 
 class ChatLogActivity : AppCompatActivity() {
+    companion object{
+        val MESSAGETAG = "MessageLog"
+    }
+    val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
+        listenForMessages()
+        val rv_chatLog =findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_chatLog)
+        rv_chatLog.adapter = adapter
+
+        val btn_send = findViewById<Button>(R.id.btn_send)
+        btn_send.setOnClickListener {
+            Log.i(MESSAGETAG,"Attempt to send message")
+            performSendMessage()
+        }
 
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         supportActionBar?.title = user?.username
+//        setupDummyChatLogs()
 
+    }
+    class ChatMessage(val id:String,val message:String,val fromId:String,
+                      val toId:String,val timestamp:Long){
+        constructor() : this("","","","",-1)
+    }
+    fun performSendMessage(){
+        val edt_message = findViewById<EditText>(R.id.edt_message)
+
+        val fromId = FirebaseAuth.getInstance().uid
+        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val toId = user?.uid
+        val message = edt_message.text.toString()
+
+        if(fromId == null) return
+
+        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
+
+        val chatMessage = ChatMessage(reference.key!!,message,fromId,toId!!
+            ,System.currentTimeMillis()/1000)
+        reference.setValue(chatMessage)
+            .addOnSuccessListener {
+                Log.i(MESSAGETAG,"Saved our chat message ${reference.key}")
+            }
+            .addOnFailureListener {
+                Log.i(MESSAGETAG,"FAILED to save ${reference.key}")
+            }
+    }
+    fun listenForMessages(){
+        val ref = FirebaseDatabase.getInstance().getReference("/messages")
+        ref.addChildEventListener(object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java)
+                if (chatMessage != null) {
+                    Log.i(MESSAGETAG,"${chatMessage?.message}")
+                    if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
+                        adapter.add(ChatFromItem(chatMessage.message))
+                    }else{
+                        adapter.add(ChatToItem(chatMessage.message))
+                    }
+
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+
+    private fun setupDummyChatLogs(){
         val rv_chatLog =findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_chatLog)
         val adapter = GroupAdapter<GroupieViewHolder>()
 
-        adapter.add(ChatFromItem())
-        adapter.add(ChatToItem())
-        adapter.add(ChatFromItem())
-        adapter.add(ChatToItem())
+        adapter.add(ChatFromItem("From"))
+        adapter.add(ChatToItem("to"))
+        adapter.add(ChatFromItem("frohere"))
+        adapter.add(ChatToItem("To hero"))
 
         rv_chatLog.adapter =adapter
-
     }
 }
 
-class ChatFromItem : Item<GroupieViewHolder>(){
+class ChatFromItem(val text : String): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        viewHolder.itemView.findViewById<TextView>(R.id.tv_chatFromRow).text = text
 
     }
     override fun getLayout(): Int {
@@ -37,8 +126,9 @@ class ChatFromItem : Item<GroupieViewHolder>(){
     }
 }
 
-class ChatToItem : Item<GroupieViewHolder>(){
+class ChatToItem(val text : String) : Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        viewHolder.itemView.findViewById<TextView>(R.id.tv_chatToRow).text = text
 
     }
     override fun getLayout(): Int {
