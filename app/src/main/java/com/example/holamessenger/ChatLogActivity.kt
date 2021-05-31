@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.android.synthetic.main.activity_chat_log.*
 
 class ChatLogActivity : AppCompatActivity() {
     companion object{
@@ -55,16 +56,33 @@ class ChatLogActivity : AppCompatActivity() {
         if(fromId == null) return
 
 //        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
-        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
+            .push()
+        //if we signout from surya to vinayagar, we losst the messages that vinayaga sent to surya
+        // so what we do is, we simultaneously save surya --sent message to-->vinayaga
+        //                      as vinayaga --sent message to-->surya
+        // therefore, if we login a vinayaga, it seems like we have received messages from surya
+        // i.e, those messages that surya --sent message to-->vinayaga
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").
+        push()
 
         val chatMessage = ChatMessage(reference.key!!,message,fromId,toId!!
             ,System.currentTimeMillis()/1000)
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.i(MESSAGETAG,"Saved our chat message ${reference.key}")
+                edt_message.text.clear()
+                rv_chatLog.scrollToPosition(adapter.itemCount-1)
             }
             .addOnFailureListener {
                 Log.i(MESSAGETAG,"FAILED to save ${reference.key}")
+            }
+        toReference.setValue(chatMessage)
+            .addOnSuccessListener {
+                Log.i(MESSAGETAG,"BACKUP MESSAGE Saved ${reference.key}")
+            }
+            .addOnFailureListener {
+                Log.i(MESSAGETAG,"FAILED to save BACKUP MESSAGE ${reference.key}")
             }
     }
     fun listenForMessages(){
