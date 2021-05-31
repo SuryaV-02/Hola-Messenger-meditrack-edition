@@ -20,7 +20,7 @@ class ChatLogActivity : AppCompatActivity() {
     companion object{
         val MESSAGETAG = "MessageLog"
     }
-    var toUser : User? = null
+    var fromUser : User? = null
     val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +35,8 @@ class ChatLogActivity : AppCompatActivity() {
             Log.i(MESSAGETAG,"Attempt to send message")
             performSendMessage()
         }
-        toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = toUser?.username
+        fromUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        supportActionBar?.title = fromUser?.username
 //        setupDummyChatLogs()
 
     }
@@ -74,10 +74,11 @@ class ChatLogActivity : AppCompatActivity() {
                 if (chatMessage != null) {
                     Log.i(MESSAGETAG,"${chatMessage?.message}")
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatToItem(chatMessage.message,toUser!!))
-                    }else{
                         val currentUser = LatestMessagesActivity.currentUser
-                        adapter.add(ChatFromItem(chatMessage.message,currentUser!!))
+                        adapter.add(ChatToItem(chatMessage.message,currentUser!!))
+                    }else{
+
+                        adapter.add(ChatFromItem(chatMessage.message,fromUser!!))
                     }
 
                 }
