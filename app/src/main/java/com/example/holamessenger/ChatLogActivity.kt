@@ -74,9 +74,10 @@ class ChatLogActivity : AppCompatActivity() {
                 if (chatMessage != null) {
                     Log.i(MESSAGETAG,"${chatMessage?.message}")
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatFromItem(chatMessage.message))
-                    }else{
                         adapter.add(ChatToItem(chatMessage.message,toUser!!))
+                    }else{
+                        val currentUser = LatestMessagesActivity.currentUser
+                        adapter.add(ChatFromItem(chatMessage.message,currentUser!!))
                     }
 
                 }
@@ -102,9 +103,12 @@ class ChatLogActivity : AppCompatActivity() {
     }
 }
 
-class ChatFromItem(val text : String): Item<GroupieViewHolder>(){
+class ChatFromItem(val text : String,val user: User): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.tv_chatFromRow).text = text
+        val uri = user.profileImageUrl
+        val targetImageVIew = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_fromUser)
+        Picasso.get().load(uri).into(targetImageVIew)
 
     }
     override fun getLayout(): Int {
