@@ -8,8 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -25,6 +27,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 //        showDummyRows()
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
+        rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
         listenForLatestMessages()
 
         fetchCurrentUser()
@@ -75,6 +78,31 @@ class LatestMessagesActivity : AppCompatActivity() {
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
                 .text=chatMessage.message
+
+            val chatPartnerId : String
+            if(chatMessage.fromId==FirebaseAuth.getInstance().uid){
+                chatPartnerId = chatMessage.toId
+            }else{
+                chatPartnerId = chatMessage.fromId
+            }
+            val ref = FirebaseDatabase.getInstance().getReference("/users/$chatPartnerId")
+            ref.addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(User::class.java)
+                    viewHolder.itemView.findViewById<TextView>(R.id.latest_userName)
+                        .text=user?.username
+
+                    val targetImageView = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_chatrow_userProfile)
+                    Picasso.get().load(user?.profileImageUrl).into(targetImageView)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+
+
         }
 
         override fun getLayout(): Int {
