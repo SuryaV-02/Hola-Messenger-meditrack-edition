@@ -11,4 +11,12 @@
     <color name="absolute_white">#ffffff</color>
     <color name="bg_black">#121212</color>
     <color name="surface_black">#363636</color>
+
+    <color name="accentColor">#00f2d6</color>
+    <color name="accentColorDark">#0b6c60</color>
+    <color name="cloud_white">#ecf0f1</color>
+    <color name="surface_white">#d9d9d9</color>
+
+
+    <color name="absolute_black">#121212</color>
 </resources>

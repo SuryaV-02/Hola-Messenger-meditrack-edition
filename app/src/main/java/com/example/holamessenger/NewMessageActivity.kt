@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
 import com.xwray.groupie.GroupAdapter
@@ -21,6 +22,11 @@ class NewMessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_message)
         supportActionBar?.title = "Select User"
+        val rv_newmessage = findViewById<RecyclerView>(R.id.rv_newmessage)
+        rv_newmessage.addItemDecoration(
+            DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL)
+        )
 
         fetchUsersFromFirebaseDatabase()
 
@@ -35,6 +41,7 @@ class NewMessageActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 //runs everytime we fetch data from the database
                 val rv_newmessage = findViewById<RecyclerView>(R.id.rv_newmessage)
+
                 val adapter = GroupAdapter<GroupieViewHolder>()
                 snapshot.children.forEach {
                     Log.i("SKHST",it.toString())

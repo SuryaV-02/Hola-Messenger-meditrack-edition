@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp">
+    android:layout_height="80dp"
+    android:background="@color/cloud_white">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_chatrow_userProfile"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55"
         app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
     <TextView
@@ -22,6 +24,8 @@
         android:layout_marginStart="12dp"
         android:text="TextView"
         android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/absolute_black"
         app:layout_constraintBottom_toTopOf="@+id/latest_user_message"
         app:layout_constraintStart_toEndOf="@+id/iv_chatrow_userProfile"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,9 +36,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+
         android:text="TextView"
-        android:textSize="20dp"
+        android:textSize="18sp"
+        android:alpha="0.75"
+        android:textColor="@color/absolute_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

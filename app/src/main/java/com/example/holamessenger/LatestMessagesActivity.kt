@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,10 +26,24 @@ class LatestMessagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_latest_messages)
+        supportActionBar?.hide()
 //        showDummyRows()
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+        val btn_newMessage = findViewById<ImageButton>(R.id.btn_newMessage)
+        val btn_userInfo = findViewById<ImageButton>(R.id.btn_userInfo)
+        btn_userInfo.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this,login::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        btn_newMessage.setOnClickListener{
+            val intent = Intent(this,NewMessageActivity::class.java)
+            startActivity(intent)
+        }
 
         adapter.setOnItemClickListener { item, view ->
             val row = item as LatestMessageRow

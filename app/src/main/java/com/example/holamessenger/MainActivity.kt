@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
         val btn_register = findViewById<Button>(R.id.btn_register)
         val tv_login = findViewById<TextView>(R.id.tv_login)
         val btn_uploadPhoto =findViewById<Button>(R.id.btn_uploadPhoto)

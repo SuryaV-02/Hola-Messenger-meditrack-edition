@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 class login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_login)
         val btn_login = findViewById<Button>(R.id.btn_login)
         val tv_register = findViewById<TextView>(R.id.tv_register)

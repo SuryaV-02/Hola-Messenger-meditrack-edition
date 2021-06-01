@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
-    android:background="@color/surface_black"
+    android:background="@color/cloud_white"
     android:gravity="center"
     >
 
@@ -21,8 +21,9 @@
         android:layout_marginLeft="15dp"
         android:gravity="left"
         android:layout_height="wrap_content"
+
         android:text="User Name"
-        android:textColor="@color/absolute_white"
+        android:textColor="@color/absolute_black"
         android:textSize="16dp"
 
         />
