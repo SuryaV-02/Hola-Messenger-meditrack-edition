@@ -16,6 +16,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
+// COURSE COMPLETED!
 
 class ChatLogActivity : AppCompatActivity() {
     companion object{
