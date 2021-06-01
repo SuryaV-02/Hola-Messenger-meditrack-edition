@@ -1,30 +1,92 @@
 package com.example.holamessenger
 
 import android.content.Intent
-import android.os.Build.VERSION_CODES.M
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.*
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.GroupieViewHolder
+import com.xwray.groupie.Item
 
 class LatestMessagesActivity : AppCompatActivity() {
     companion object{
         var currentUser : User? = null
     }
+    val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_latest_messages)
+//        showDummyRows()
+        val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
+        rv_latestMessages.adapter = adapter
+        listenForLatestMessages()
 
         fetchCurrentUser()
         verifyUserLogin()
+    }
+
+    val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
+
+    fun refreshRecycleViewMessages(){
+        adapter.clear()
+        latestMessagesMap.values.forEach {
+            adapter.add(LatestMessageRow(it))
+        }
+    }
+    private fun listenForLatestMessages() {
+        val fromId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-message/$fromId")
+        ref.addChildEventListener(object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                latestMessagesMap[snapshot.key!!] =chatMessage!!
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                latestMessagesMap[snapshot.key!!] =chatMessage!!
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+    }
+
+    class LatestMessageRow(val chatMessage :ChatLogActivity.ChatMessage) : Item<GroupieViewHolder>(){
+        override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+            viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
+                .text=chatMessage.message
+        }
+
+        override fun getLayout(): Int {
+            return R.layout.latest_messages_row
+        }
+
+    }
+    private fun showDummyRows() {
+        val adapter = GroupAdapter<GroupieViewHolder>()
+        val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
+        rv_latestMessages.adapter = adapter
+
     }
 
     private fun fetchCurrentUser() {

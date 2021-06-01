@@ -84,6 +84,14 @@ class ChatLogActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Log.i(MESSAGETAG,"FAILED to save BACKUP MESSAGE ${reference.key}")
             }
+
+        val latestMessageFromRef = FirebaseDatabase.getInstance()
+            .getReference("/latest-message/$fromId/$toId")
+        latestMessageFromRef.setValue(chatMessage)
+
+        val latestMessageToRef = FirebaseDatabase.getInstance()
+            .getReference("/latest-message/$toId/$fromId")
+        latestMessageToRef.setValue(chatMessage)
     }
     fun listenForMessages(){
         val fromId = FirebaseAuth.getInstance().uid
