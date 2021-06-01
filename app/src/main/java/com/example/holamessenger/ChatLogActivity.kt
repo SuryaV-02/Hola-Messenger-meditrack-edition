@@ -112,6 +112,7 @@ class ChatLogActivity : AppCompatActivity() {
                     }
 
                 }
+                rv_chatLog.scrollToPosition(adapter.itemCount-1)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {

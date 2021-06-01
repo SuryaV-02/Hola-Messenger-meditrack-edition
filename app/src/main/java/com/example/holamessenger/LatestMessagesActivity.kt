@@ -28,6 +28,14 @@ class LatestMessagesActivity : AppCompatActivity() {
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+
+        adapter.setOnItemClickListener { item, view ->
+            val row = item as LatestMessageRow
+            val intent = Intent(this,ChatLogActivity::class.java)
+            intent.putExtra(NewMessageActivity.USER_KEY,row.chatPartnerUser)
+            startActivity(intent)
+        }
+
         listenForLatestMessages()
 
         fetchCurrentUser()
@@ -75,6 +83,7 @@ class LatestMessagesActivity : AppCompatActivity() {
     }
 
     class LatestMessageRow(val chatMessage :ChatLogActivity.ChatMessage) : Item<GroupieViewHolder>(){
+        var chatPartnerUser : User? = null
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
             viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
                 .text=chatMessage.message
@@ -88,12 +97,12 @@ class LatestMessagesActivity : AppCompatActivity() {
             val ref = FirebaseDatabase.getInstance().getReference("/users/$chatPartnerId")
             ref.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue(User::class.java)
+                    chatPartnerUser = snapshot.getValue(User::class.java)
                     viewHolder.itemView.findViewById<TextView>(R.id.latest_userName)
-                        .text=user?.username
+                        .text=chatPartnerUser?.username
 
                     val targetImageView = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_chatrow_userProfile)
-                    Picasso.get().load(user?.profileImageUrl).into(targetImageView)
+                    Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
