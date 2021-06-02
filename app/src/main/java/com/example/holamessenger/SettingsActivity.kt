@@ -1,14 +1,9 @@
 package com.example.holamessenger
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -16,16 +11,15 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import java.net.URL
 import java.util.*
+
 
 class SettingsActivity : AppCompatActivity() {
     var selectedPhotoUri : Uri? = null
+    //val progressDialogBar = ProgressBar(this)
+    //val dialog = ProgressDialog(this)
     companion object{
         var USER_NAME = LatestMessagesActivity.currentUser?.username
         var USER_PROFILE_IMAGE_URL = LatestMessagesActivity.currentUser?.profileImageUrl
@@ -43,6 +37,8 @@ class SettingsActivity : AppCompatActivity() {
         val tv_userName_settings = findViewById<TextView>(R.id.tv_userName_settings)
         val btn_signout_settings = findViewById<Button>(R.id.btn_signout_settings)
         val btn_okay_settings = findViewById<Button>(R.id.btn_okay_settings)
+        val pb_settings = findViewById<ProgressBar>(R.id.pb_settings)
+
         tv_userName_settings.text = USER_NAME
         btn_signout_settings.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
@@ -51,6 +47,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btn_okay_settings.setOnClickListener {
+            pb_settings.visibility = View.VISIBLE
             uploadImageToFirebaseStorage()
         }
         profile_image.setOnClickListener{
@@ -94,27 +91,13 @@ class SettingsActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("/users/${com.example.holamessenger.SettingsActivity.Companion.USER_ID}/profileImageUrl")
         ref.setValue(profileImageUrl)
             .addOnSuccessListener {
+                val pb_settings = findViewById<ProgressBar>(R.id.pb_settings)
                 Log.i("SETTINGS_TAG","SUCCESS Finally we saved data to Database SKHST!!!")
-                super.onBackPressed()
+                pb_settings.visibility = View.INVISIBLE
 
             }
             .addOnFailureListener {
                 Log.i("SETTINGS_TAG","FAILED to upload to database ${it.message}")
             }
-    }
-    private fun fetchCurrentUser() {
-        val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                LatestMessagesActivity.currentUser = snapshot.getValue(User::class.java)
-                Log.i("SHKST", LatestMessagesActivity.currentUser?.profileImageUrl.toString())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
     }
 }
