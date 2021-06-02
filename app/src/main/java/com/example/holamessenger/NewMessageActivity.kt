@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.*
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -44,19 +45,21 @@ class NewMessageActivity : AppCompatActivity() {
 
                 val adapter = GroupAdapter<GroupieViewHolder>()
                 snapshot.children.forEach {
-                    Log.i("SKHST",it.toString())
                     val user = it.getValue(User::class.java)
-                    if(user!=null){
-                        adapter.add(userItem(user))
+                    if(user?.uid != FirebaseAuth.getInstance().uid){
+                        Log.i("SKHST",it.toString())
+                        if(user!=null){
+                            adapter.add(userItem(user))
+                        }
+                        adapter.setOnItemClickListener { item, view ->
+                            val intent = Intent(view.context,ChatLogActivity::class.java)
+                            val userItem = item as userItem
+                            intent.putExtra(USER_KEY,userItem.user)
+                            startActivity(intent)
+                            finish()
+                        }
+                        rv_newmessage.adapter = adapter
                     }
-                    adapter.setOnItemClickListener { item, view ->
-                        val intent = Intent(view.context,ChatLogActivity::class.java)
-                        val userItem = item as userItem
-                        intent.putExtra(USER_KEY,userItem.user)
-                        startActivity(intent)
-                        finish()
-                    }
-                    rv_newmessage.adapter = adapter
 
                 }
             }

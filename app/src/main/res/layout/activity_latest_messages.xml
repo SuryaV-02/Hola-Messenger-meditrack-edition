@@ -67,14 +67,13 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
-    <ImageButton
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_userInfo"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="16dp"
+        android:src="@drawable/user_avatar"
         android:layout_marginTop="16dp"
-        android:background="@drawable/user_avatar"
-        android:text="Messages"
         android:translationZ="90dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

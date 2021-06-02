@@ -17,7 +17,6 @@
         android:background="@drawable/edit_text_bg"
         android:hint="Enter your message"
         android:inputType="textLongMessage"
-
         android:paddingHorizontal="15dp"
         android:textColor="@color/absolute_black"
         android:textColorHint="@color/absolute_black"
@@ -43,6 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/cloud_white"
+        android:layout_marginBottom="10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/edt_message"
         app:layout_constraintEnd_toEndOf="parent"

@@ -25,6 +25,7 @@ class LatestMessagesActivity : AppCompatActivity() {
     val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_latest_messages)
         supportActionBar?.hide()
 //        showDummyRows()
@@ -32,13 +33,9 @@ class LatestMessagesActivity : AppCompatActivity() {
         rv_latestMessages.adapter = adapter
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
         val btn_newMessage = findViewById<ImageButton>(R.id.btn_newMessage)
-        val btn_userInfo = findViewById<ImageButton>(R.id.btn_userInfo)
-//        btn_userInfo.setOnClickListener {
-//            FirebaseAuth.getInstance().signOut()
-//            val intent = Intent(this,login::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            startActivity(intent)
-//        }
+        val btn_userInfo = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.btn_userInfo)
+        Log.i("SETTINGS_TAG","@latestMessage ${currentUser?.profileImageUrl}")
+
         btn_userInfo.setOnClickListener {
             val intent = Intent(this,SettingsActivity::class.java)
             startActivity(intent)
@@ -57,9 +54,11 @@ class LatestMessagesActivity : AppCompatActivity() {
         }
 
         listenForLatestMessages()
-
         fetchCurrentUser()
+
         verifyUserLogin()
+        DownloadImageFromInternet(findViewById(R.id.btn_userInfo))
+            .execute("${currentUser?.profileImageUrl}")
     }
 
     val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()

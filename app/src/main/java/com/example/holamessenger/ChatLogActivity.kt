@@ -48,51 +48,53 @@ class ChatLogActivity : AppCompatActivity() {
     }
     fun performSendMessage(){
         val edt_message = findViewById<EditText>(R.id.edt_message)
-
-        val fromId = FirebaseAuth.getInstance().uid
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        val toId = user?.uid
         val message = edt_message.text.toString()
+        if(message!=""){
+            val fromId = FirebaseAuth.getInstance().uid
+            val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+            val toId = user?.uid
 
-        if(fromId == null) return
+
+            if(fromId == null) return
 
 //        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
-        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
-            .push()
-        //if we signout from surya to vinayagar, we losst the messages that vinayaga sent to surya
-        // so what we do is, we simultaneously save surya --sent message to-->vinayaga
-        //                      as vinayaga --sent message to-->surya
-        // therefore, if we login a vinayaga, it seems like we have received messages from surya
-        // i.e, those messages that surya --sent message to-->vinayaga
-        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").
-        push()
+            val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
+                .push()
+            //if we signout from surya to vinayagar, we losst the messages that vinayaga sent to surya
+            // so what we do is, we simultaneously save surya --sent message to-->vinayaga
+            //                      as vinayaga --sent message to-->surya
+            // therefore, if we login a vinayaga, it seems like we have received messages from surya
+            // i.e, those messages that surya --sent message to-->vinayaga
+            val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").
+            push()
 
-        val chatMessage = ChatMessage(reference.key!!,message,fromId,toId!!
-            ,System.currentTimeMillis()/1000)
-        reference.setValue(chatMessage)
-            .addOnSuccessListener {
-                Log.i(MESSAGETAG,"Saved our chat message ${reference.key}")
-                edt_message.text.clear()
-                rv_chatLog.scrollToPosition(adapter.itemCount-1)
-            }
-            .addOnFailureListener {
-                Log.i(MESSAGETAG,"FAILED to save ${reference.key}")
-            }
-        toReference.setValue(chatMessage)
-            .addOnSuccessListener {
-                Log.i(MESSAGETAG,"BACKUP MESSAGE Saved ${reference.key}")
-            }
-            .addOnFailureListener {
-                Log.i(MESSAGETAG,"FAILED to save BACKUP MESSAGE ${reference.key}")
-            }
+            val chatMessage = ChatMessage(reference.key!!,message,fromId,toId!!
+                ,System.currentTimeMillis()/1000)
+            reference.setValue(chatMessage)
+                .addOnSuccessListener {
+                    Log.i(MESSAGETAG,"Saved our chat message ${reference.key}")
+                    edt_message.text.clear()
+                    rv_chatLog.scrollToPosition(adapter.itemCount-1)
+                }
+                .addOnFailureListener {
+                    Log.i(MESSAGETAG,"FAILED to save ${reference.key}")
+                }
+            toReference.setValue(chatMessage)
+                .addOnSuccessListener {
+                    Log.i(MESSAGETAG,"BACKUP MESSAGE Saved ${reference.key}")
+                }
+                .addOnFailureListener {
+                    Log.i(MESSAGETAG,"FAILED to save BACKUP MESSAGE ${reference.key}")
+                }
 
-        val latestMessageFromRef = FirebaseDatabase.getInstance()
-            .getReference("/latest-message/$fromId/$toId")
-        latestMessageFromRef.setValue(chatMessage)
+            val latestMessageFromRef = FirebaseDatabase.getInstance()
+                .getReference("/latest-message/$fromId/$toId")
+            latestMessageFromRef.setValue(chatMessage)
 
-        val latestMessageToRef = FirebaseDatabase.getInstance()
-            .getReference("/latest-message/$toId/$fromId")
-        latestMessageToRef.setValue(chatMessage)
+            val latestMessageToRef = FirebaseDatabase.getInstance()
+                .getReference("/latest-message/$toId/$fromId")
+            latestMessageToRef.setValue(chatMessage)
+        }
     }
     fun listenForMessages(){
         val fromId = FirebaseAuth.getInstance().uid
