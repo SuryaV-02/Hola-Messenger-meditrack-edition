@@ -33,10 +33,14 @@ class LatestMessagesActivity : AppCompatActivity() {
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
         val btn_newMessage = findViewById<ImageButton>(R.id.btn_newMessage)
         val btn_userInfo = findViewById<ImageButton>(R.id.btn_userInfo)
+//        btn_userInfo.setOnClickListener {
+//            FirebaseAuth.getInstance().signOut()
+//            val intent = Intent(this,login::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            startActivity(intent)
+//        }
         btn_userInfo.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this,login::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = Intent(this,SettingsActivity::class.java)
             startActivity(intent)
         }
 
