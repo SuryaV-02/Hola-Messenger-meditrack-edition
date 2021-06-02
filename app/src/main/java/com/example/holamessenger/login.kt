@@ -34,7 +34,7 @@ class login : AppCompatActivity() {
         val password = edt_textPassword.text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill out email/pw.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please fill All the details!", Toast.LENGTH_SHORT).show()
             return
         }
 

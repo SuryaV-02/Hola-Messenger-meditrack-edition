@@ -28,7 +28,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_latest_messages)
         supportActionBar?.hide()
-//        showDummyRows()
+
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
@@ -138,12 +138,6 @@ class LatestMessagesActivity : AppCompatActivity() {
         }
 
     }
-    private fun showDummyRows() {
-        val adapter = GroupAdapter<GroupieViewHolder>()
-        val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
-        rv_latestMessages.adapter = adapter
-
-    }
 
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
@@ -151,6 +145,7 @@ class LatestMessagesActivity : AppCompatActivity() {
         ref.addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 currentUser = snapshot.getValue(User::class.java)
+                Log.i("SHKST", currentUser?.username.toString())
                 Log.i("SHKST", currentUser?.profileImageUrl.toString())
             }
 
@@ -159,8 +154,6 @@ class LatestMessagesActivity : AppCompatActivity() {
             }
 
         })
-
-
     }
 
     private fun verifyUserLogin(){

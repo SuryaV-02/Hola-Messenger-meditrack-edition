@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val btn_register = findViewById<Button>(R.id.btn_register)
         val tv_login = findViewById<TextView>(R.id.tv_login)
         val btn_uploadPhoto =findViewById<Button>(R.id.btn_uploadPhoto)
+        val profile_image =findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profile_image)
 
         btn_register.setOnClickListener {
             performRegister()
@@ -38,6 +39,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
         }
         btn_uploadPhoto.setOnClickListener {
+            Toast.makeText(this, "Select photo", Toast.LENGTH_SHORT).show()
+            val i = Intent(Intent.ACTION_PICK)
+            i.type= "image/*"
+            startActivityForResult(i,0)
+        }
+        profile_image.setOnClickListener{
             Toast.makeText(this, "Select photo", Toast.LENGTH_SHORT).show()
             val i = Intent(Intent.ACTION_PICK)
             i.type= "image/*"
@@ -61,10 +68,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
+        val edt_name = findViewById<EditText>(R.id.edt_name)
         val edt_email = findViewById<EditText>(R.id.edt_email)
         val edt_textPassword = findViewById<EditText>(R.id.edt_textPassword)
         val email = edt_email.text.toString()
         val password = edt_textPassword.text.toString()
+
+        if(edt_name.text.isEmpty() || edt_email.text.isEmpty() ||
+            edt_textPassword.text.isEmpty() || selectedPhotoUri==null){
+            Toast.makeText(this, "Please fill All the details!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         if(email.isEmpty() && password.isEmpty()){
             Toast.makeText(this, "Enter All details", Toast.LENGTH_SHORT).show()
             return
@@ -118,8 +134,6 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Log.i("SKSHT","FAILED to upload to database ${it.message}")
             }
-
-
     }
 }
 @Parcelize
