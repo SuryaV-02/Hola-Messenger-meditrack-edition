@@ -5,11 +5,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 
 
 @SuppressLint("StaticFieldLeak")
-class DownloadImageFromInternet(var imageView: de.hdodenhof.circleimageview.CircleImageView) : AsyncTask<String, Void, Bitmap?>() {
+class DownloadImageFromInternet(var imageView: de.hdodenhof.circleimageview.CircleImageView,var progressBar : ProgressBar) : AsyncTask<String, Void, Bitmap?>() {
     override fun doInBackground(vararg urls: String): Bitmap? {
+        progressBar.visibility =View.VISIBLE
         val imageURL = urls[0]
         var image: Bitmap? = null
         try {
@@ -24,5 +27,6 @@ class DownloadImageFromInternet(var imageView: de.hdodenhof.circleimageview.Circ
     }
     override fun onPostExecute(result: Bitmap?) {
         imageView.setImageBitmap(result)
+        progressBar.visibility =View.GONE
     }
 }

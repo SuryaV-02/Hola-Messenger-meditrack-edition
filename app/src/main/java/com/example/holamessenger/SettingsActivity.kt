@@ -1,9 +1,13 @@
 package com.example.holamessenger
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -24,20 +28,25 @@ class SettingsActivity : AppCompatActivity() {
         var USER_NAME = LatestMessagesActivity.currentUser?.username
         var USER_PROFILE_IMAGE_URL = LatestMessagesActivity.currentUser?.profileImageUrl
         var USER_ID = LatestMessagesActivity.currentUser?.uid
-
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("SETTINGS_TAG","$USER_PROFILE_IMAGE_URL")
         setContentView(R.layout.activity_settings)
+        val pb_settings = findViewById<ProgressBar>(R.id.pb_settings)
+        pb_settings.visibility = View.VISIBLE
 
-        DownloadImageFromInternet(findViewById(R.id.iv_profile_image_settings)).execute("$USER_PROFILE_IMAGE_URL")
+        // TODO: 02-Jun-21 check this out!
+        DownloadImageFromInternet(findViewById(R.id.iv_profile_image_settings),findViewById(R.id.pb_settings)).execute("$USER_PROFILE_IMAGE_URL")
+//        DownloadAndSetProfileImage(
+//            "$USER_PROFILE_IMAGE_URL")
 
         val profile_image = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_profile_image_settings)
         val tv_userName_settings = findViewById<TextView>(R.id.tv_userName_settings)
         val btn_signout_settings = findViewById<Button>(R.id.btn_signout_settings)
         val btn_okay_settings = findViewById<Button>(R.id.btn_okay_settings)
-        val pb_settings = findViewById<ProgressBar>(R.id.pb_settings)
+
+
 
         tv_userName_settings.text = USER_NAME
         btn_signout_settings.setOnClickListener {
@@ -56,6 +65,8 @@ class SettingsActivity : AppCompatActivity() {
             i.type= "image/*"
             startActivityForResult(i,0)
         }
+        pb_settings.visibility = View.GONE
+
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -100,4 +111,44 @@ class SettingsActivity : AppCompatActivity() {
                 Log.i("SETTINGS_TAG","FAILED to upload to database ${it.message}")
             }
     }
+    fun DownloadAndSetProfileImage(url: String){
+        val imageURL = url
+        val imageView = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_profile_image_settings)
+        var image: Bitmap? = null
+        try {
+            val `in` = java.net.URL(imageURL).openStream()
+            image = BitmapFactory.decodeStream(`in`)
+            Log.i("SETTINGS_TAG","Try success")
+        }
+        catch (e: Exception) {
+            Log.i("SETTINGS_TAG", e.message.toString())
+            e.printStackTrace()
+        }
+        Log.i("SETTINGS_TAG","SETTING Image")
+        imageView.setImageBitmap(image)
+        Log.i("SETTINGS_TAG","ALL SET SKHST!")
+    }
+}
+
+@SuppressLint("StaticFieldLeak")
+class DownloadImageNow(var imageView: de.hdodenhof.circleimageview.CircleImageView
+,var progressBar : ProgressBar) : AsyncTask<String, Void, Bitmap?>() {
+    override fun doInBackground(vararg urls: String): Bitmap? {
+        val imageURL = urls[0]
+        var image: Bitmap? = null
+        progressBar.visibility = View.VISIBLE
+        try {
+            val `in` = java.net.URL(imageURL).openStream()
+            image = BitmapFactory.decodeStream(`in`)
+        }
+        catch (e: Exception) {
+            Log.e("Error Message", e.message.toString())
+            e.printStackTrace()
+        }
+        return image
+    }
+    override fun onPostExecute(result: Bitmap?) {
+        imageView.setImageBitmap(result)
+    }
+
 }

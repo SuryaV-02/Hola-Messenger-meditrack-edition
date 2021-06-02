@@ -3,8 +3,10 @@ package com.example.holamessenger
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
@@ -97,6 +99,8 @@ class ChatLogActivity : AppCompatActivity() {
         }
     }
     fun listenForMessages(){
+        val pb_chatLog =findViewById<ProgressBar>(R.id.pb_chatLog)
+        pb_chatLog.visibility = View.VISIBLE
         val fromId = FirebaseAuth.getInstance().uid
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val toId = user?.uid
@@ -108,14 +112,17 @@ class ChatLogActivity : AppCompatActivity() {
                     Log.i(MESSAGETAG,"${chatMessage?.message}")
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
                         val currentUser = LatestMessagesActivity.currentUser
-                        adapter.add(ChatToItem(chatMessage.message,currentUser!!))
+                        adapter.add(ChatToItem(chatMessage.message,currentUser!!
+                            ,findViewById(R.id.pb_chatLog)))
                     }else{
-
-                        adapter.add(ChatFromItem(chatMessage.message,toUser!!))
+                        adapter.add(ChatFromItem(chatMessage.message,toUser!!
+                        ,findViewById(R.id.pb_chatLog)))
                     }
 
                 }
                 rv_chatLog.scrollToPosition(adapter.itemCount-1)
+
+                pb_chatLog.visibility = View.GONE
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -135,15 +142,18 @@ class ChatLogActivity : AppCompatActivity() {
             }
 
         })
+        pb_chatLog.visibility = View.GONE
     }
 }
 
-class ChatFromItem(val text : String,val user: User): Item<GroupieViewHolder>(){
+class ChatFromItem(val text : String,val user: User,val progressBar :ProgressBar): Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        progressBar.visibility = View.VISIBLE
         viewHolder.itemView.findViewById<TextView>(R.id.tv_chatFromRow).text = text
         val uri = user.profileImageUrl
         val targetImageVIew = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_fromUser)
         Picasso.get().load(uri).into(targetImageVIew)
+        progressBar.visibility = View.INVISIBLE
 
     }
     override fun getLayout(): Int {
@@ -151,13 +161,14 @@ class ChatFromItem(val text : String,val user: User): Item<GroupieViewHolder>(){
     }
 }
 
-class ChatToItem(val text: String, val user: User) : Item<GroupieViewHolder>(){
+class ChatToItem(val text: String, val user: User,val progressBar :ProgressBar) : Item<GroupieViewHolder>(){
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+        progressBar.visibility = View.VISIBLE
         viewHolder.itemView.findViewById<TextView>(R.id.tv_chatToRow).text = text
         val uri = user.profileImageUrl
         val targetImageVIew = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_toUser)
         Picasso.get().load(uri).into(targetImageVIew)
-
+        progressBar.visibility = View.INVISIBLE
 
     }
     override fun getLayout(): Int {

@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -28,6 +26,8 @@ class LatestMessagesActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_latest_messages)
         supportActionBar?.hide()
+        val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
+        pb_latest_messages.visibility = View.VISIBLE
 
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
@@ -57,32 +57,42 @@ class LatestMessagesActivity : AppCompatActivity() {
         fetchCurrentUser()
 
         verifyUserLogin()
-        DownloadImageFromInternet(findViewById(R.id.btn_userInfo))
-            .execute("${currentUser?.profileImageUrl}")
+//        DownloadImageFromInternet(findViewById(R.id.btn_userInfo))
+//            .execute("${currentUser?.profileImageUrl}")
+        pb_latest_messages.visibility = View.VISIBLE
     }
 
     val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
 
     fun refreshRecycleViewMessages(){
+        val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
+        pb_latest_messages.visibility = View.VISIBLE
         adapter.clear()
         latestMessagesMap.values.forEach {
-            adapter.add(LatestMessageRow(it))
+            //adapter.add(LatestMessageRow(it))
+            adapter.add(LatestMessageRow(it,findViewById(R.id.pb_latest_messages)))
         }
+        pb_latest_messages.visibility = View.GONE
     }
     private fun listenForLatestMessages() {
+        val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
         val fromId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/latest-message/$fromId")
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
+                pb_latest_messages.visibility = View.GONE
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
+                pb_latest_messages.visibility = View.GONE
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -98,12 +108,14 @@ class LatestMessagesActivity : AppCompatActivity() {
             }
 
         })
+        pb_latest_messages.visibility = View.GONE
 
     }
 
-    class LatestMessageRow(val chatMessage :ChatLogActivity.ChatMessage) : Item<GroupieViewHolder>(){
+    class LatestMessageRow(val chatMessage :ChatLogActivity.ChatMessage,val progressBar :ProgressBar) : Item<GroupieViewHolder>(){
         var chatPartnerUser : User? = null
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+            progressBar.visibility = View.VISIBLE
             viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
                 .text=chatMessage.message
 
@@ -122,14 +134,14 @@ class LatestMessagesActivity : AppCompatActivity() {
 
                     val targetImageView = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_chatrow_userProfile)
                     Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
+                    progressBar.visibility = View.GONE
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
-
             })
-
+            progressBar.visibility = View.GONE
 
         }
 
@@ -138,7 +150,6 @@ class LatestMessagesActivity : AppCompatActivity() {
         }
 
     }
-
     private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")

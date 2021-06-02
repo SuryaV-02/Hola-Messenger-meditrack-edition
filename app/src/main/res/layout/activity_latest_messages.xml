@@ -20,11 +20,13 @@
         android:alpha="0.6"
         app:layout_constraintBottom_toTopOf="@+id/rv_latestMessages"
         app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_marginTop="80dp"
+        android:gravity="center_horizontal"
         android:translationZ="90dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.273"
@@ -37,16 +39,16 @@
             android:layout_height="25dp"
             android:background="@drawable/search_button"
             android:text="Messages"
-            android:translationZ="90dp"/>
+            android:translationZ="90dp" />
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="15dp"
             android:text="Messages"
             android:textColor="@color/absolute_black"
-            android:textSize="20dp"
-            android:paddingHorizontal="15dp"
-            />
+            android:textSize="20dp" />
 
     </LinearLayout>
 
@@ -69,13 +71,25 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_userInfo"
+        android:alpha="0.9"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/user_avatar"
+        android:src="@drawable/maracas"
         android:layout_marginTop="16dp"
         android:translationZ="90dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_latest_messages"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_latestMessages"
+        app:layout_constraintEnd_toEndOf="@+id/rv_latestMessages"
+        app:layout_constraintStart_toStartOf="@+id/rv_latestMessages"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
