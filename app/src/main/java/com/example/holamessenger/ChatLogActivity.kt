@@ -107,6 +107,7 @@ class ChatLogActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                pb_chatLog.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatMessage::class.java)
                 if (chatMessage != null) {
                     Log.i(MESSAGETAG,"${chatMessage?.message}")

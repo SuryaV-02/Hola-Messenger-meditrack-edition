@@ -3,6 +3,7 @@ package com.example.holamessenger
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -19,6 +20,7 @@ import com.xwray.groupie.Item
 class LatestMessagesActivity : AppCompatActivity() {
     companion object{
         var currentUser : User? = null
+        var isStillFetching : Boolean = true
     }
     val adapter = GroupAdapter<GroupieViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +29,7 @@ class LatestMessagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_latest_messages)
         supportActionBar?.hide()
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
+        Log.i("PB_TAG","VISIBLE @onCreate START")
         pb_latest_messages.visibility = View.VISIBLE
 
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
@@ -55,11 +58,12 @@ class LatestMessagesActivity : AppCompatActivity() {
 
         listenForLatestMessages()
         fetchCurrentUser()
-
         verifyUserLogin()
-//        DownloadImageFromInternet(findViewById(R.id.btn_userInfo))
-//            .execute("${currentUser?.profileImageUrl}")
+
         pb_latest_messages.visibility = View.VISIBLE
+        Handler().postDelayed({
+            pb_latest_messages.visibility = View.INVISIBLE
+        }, 5000)
     }
 
     val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
@@ -67,32 +71,45 @@ class LatestMessagesActivity : AppCompatActivity() {
     fun refreshRecycleViewMessages(){
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
         pb_latest_messages.visibility = View.VISIBLE
+        Log.i("PB_TAG","VISIBLE @refresh()")
         adapter.clear()
         latestMessagesMap.values.forEach {
             //adapter.add(LatestMessageRow(it))
             adapter.add(LatestMessageRow(it,findViewById(R.id.pb_latest_messages)))
         }
         pb_latest_messages.visibility = View.GONE
+        Log.i("PB_TAG","INVISIBLE @refresh()")
     }
     private fun listenForLatestMessages() {
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
         val fromId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/latest-message/$fromId")
+//        if(latestMessagesMap.size==0){
+//            pb_latest_messages.visibility = View.GONE
+//        }
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                isStillFetching =   true
+                Log.i("PB_TAG","VISIBLE @onChildAdded()")
                 pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
+                isStillFetching =   false
                 pb_latest_messages.visibility = View.GONE
+                Log.i("PB_TAG","INVISIBLE @onChildAdded()")
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                isStillFetching =   true
+                Log.i("PB_TAG","VISIBLE @onChildcHANGEDd()")
                 pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
+                isStillFetching =   false
                 pb_latest_messages.visibility = View.GONE
+                Log.i("PB_TAG","INVISIBLE @onChildChanged()")
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -108,13 +125,15 @@ class LatestMessagesActivity : AppCompatActivity() {
             }
 
         })
-        pb_latest_messages.visibility = View.GONE
+
+        //pb_latest_messages.visibility = View.GONE
 
     }
 
     class LatestMessageRow(val chatMessage :ChatLogActivity.ChatMessage,val progressBar :ProgressBar) : Item<GroupieViewHolder>(){
         var chatPartnerUser : User? = null
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
+            Log.i("PB_TAG","VISIBLE @LatestMessageRow BIND")
             progressBar.visibility = View.VISIBLE
             viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
                 .text=chatMessage.message
@@ -128,6 +147,8 @@ class LatestMessagesActivity : AppCompatActivity() {
             val ref = FirebaseDatabase.getInstance().getReference("/users/$chatPartnerId")
             ref.addListenerForSingleValueEvent(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i("PB_TAG","VISIBLE @LatestMessageRow BIND ONDATACHANGE")
+                    progressBar.visibility = View.VISIBLE
                     chatPartnerUser = snapshot.getValue(User::class.java)
                     viewHolder.itemView.findViewById<TextView>(R.id.latest_userName)
                         .text=chatPartnerUser?.username
@@ -135,12 +156,14 @@ class LatestMessagesActivity : AppCompatActivity() {
                     val targetImageView = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_chatrow_userProfile)
                     Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
                     progressBar.visibility = View.GONE
+                    Log.i("PB_TAG","INVISIBLE @LatestMessageRow BIND")
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
+            Log.i("PB_TAG","INVISIBLE @LatestMessageRow BIND")
             progressBar.visibility = View.GONE
 
         }
