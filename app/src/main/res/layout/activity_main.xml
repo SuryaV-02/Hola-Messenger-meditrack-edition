@@ -118,7 +118,7 @@
             android:elevation="2dp"
             android:ems="10"
             android:hint="Password"
-            android:inputType="textVisiblePassword"
+            android:inputType="textPassword"
             android:paddingHorizontal="20dp"
             android:paddingVertical="5dp"
             android:textColor="@color/absolute_black"

@@ -48,7 +48,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
 
-        tv_userName_settings.text = USER_NAME
+        tv_userName_settings.text = "Hello $USER_NAME"
         btn_signout_settings.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this,login::class.java)

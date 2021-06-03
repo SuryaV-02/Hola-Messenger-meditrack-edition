@@ -55,10 +55,10 @@ class LatestMessagesActivity : AppCompatActivity() {
             intent.putExtra(NewMessageActivity.USER_KEY,row.chatPartnerUser)
             startActivity(intent)
         }
-
+        verifyUserLogin()
         listenForLatestMessages()
         fetchCurrentUser()
-        verifyUserLogin()
+
 
         pb_latest_messages.visibility = View.VISIBLE
         Handler().postDelayed({
@@ -114,14 +114,17 @@ class LatestMessagesActivity : AppCompatActivity() {
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 TODO("Not yet implemented")
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
                 TODO("Not yet implemented")
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
             }
 
         })
@@ -185,6 +188,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
             }
 
         })
@@ -193,7 +197,7 @@ class LatestMessagesActivity : AppCompatActivity() {
     private fun verifyUserLogin(){
         val uid = FirebaseAuth.getInstance().uid
         if(uid == null){
-            Toast.makeText(this, "Please Login First!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Please Login First!", Toast.LENGTH_SHORT).show()
             Log.i("SKHST","Please Login First!")
             val intent = Intent(this,MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
