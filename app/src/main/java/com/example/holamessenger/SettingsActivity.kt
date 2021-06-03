@@ -25,11 +25,12 @@ class SettingsActivity : AppCompatActivity() {
     //val progressDialogBar = ProgressBar(this)
     //val dialog = ProgressDialog(this)
     companion object{
+
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
         var USER_NAME = LatestMessagesActivity.currentUser?.username
         var USER_PROFILE_IMAGE_URL = LatestMessagesActivity.currentUser?.profileImageUrl
         var USER_ID = LatestMessagesActivity.currentUser?.uid
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("SETTINGS_TAG","$USER_PROFILE_IMAGE_URL")
         setContentView(R.layout.activity_settings)
@@ -57,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         btn_okay_settings.setOnClickListener {
             pb_settings.visibility = View.VISIBLE
-            uploadImageToFirebaseStorage()
+            uploadImageToFirebaseStorage(USER_ID!!)
         }
         profile_image.setOnClickListener{
             Toast.makeText(this, "Select photo", Toast.LENGTH_SHORT).show()
@@ -80,7 +81,7 @@ class SettingsActivity : AppCompatActivity() {
 
         }
     }
-    fun uploadImageToFirebaseStorage(){
+    fun uploadImageToFirebaseStorage(USER_ID : String){
         if(selectedPhotoUri == null) return
         val filename = UUID.randomUUID().toString()
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
@@ -90,7 +91,7 @@ class SettingsActivity : AppCompatActivity() {
                 ref.downloadUrl
                     .addOnSuccessListener {
                         Log.i("SKHST","File Location : $it")
-                        SaveUserToFirebaseDatabase(it.toString())
+                        SaveUserToFirebaseDatabase(it.toString(),USER_ID)
                     }
             }
             .addOnFailureListener{
@@ -98,8 +99,8 @@ class SettingsActivity : AppCompatActivity() {
             }
 
     }
-    fun SaveUserToFirebaseDatabase(profileImageUrl : String){
-        val ref = FirebaseDatabase.getInstance().getReference("/users/${com.example.holamessenger.SettingsActivity.Companion.USER_ID}/profileImageUrl")
+    fun SaveUserToFirebaseDatabase(profileImageUrl : String,USER_ID:String){
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$USER_ID/profileImageUrl")
         ref.setValue(profileImageUrl)
             .addOnSuccessListener {
                 val pb_settings = findViewById<ProgressBar>(R.id.pb_settings)
