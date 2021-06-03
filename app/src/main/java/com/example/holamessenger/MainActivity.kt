@@ -9,10 +9,7 @@ import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -80,11 +77,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        val pb_mainActivity = findViewById<ProgressBar>(R.id.pb_mainActivity)
 
-        if(email.isEmpty() && password.isEmpty()){
-            Toast.makeText(this, "Enter All details", Toast.LENGTH_SHORT).show()
-            return
-        }
+        pb_mainActivity.visibility = View.VISIBLE
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email,password)
             .addOnCompleteListener{
                 if(!it.isSuccessful){
@@ -92,17 +87,19 @@ class MainActivity : AppCompatActivity() {
                     return@addOnCompleteListener
                 }
                 Log.i("SKHST","Successfully created user with uid ${it.result?.user?.uid}")
-                Toast.makeText(this, "Registration Success", Toast.LENGTH_SHORT).show()
+
                 uploadImageToFirebaseStorage()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Failed to create user", Toast.LENGTH_SHORT).show()
+                pb_mainActivity.visibility = View.INVISIBLE
                 Log.i("SKHST","Failed to create user ${it.message}")
             }
     }
     fun uploadImageToFirebaseStorage(){
         if(selectedPhotoUri == null) return
         val filename = UUID.randomUUID().toString()
+        val pb_mainActivity = findViewById<ProgressBar>(R.id.pb_mainActivity)
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
@@ -114,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                     }
             }
             .addOnFailureListener{
+                pb_mainActivity.visibility = View.INVISIBLE
                 Log.i("SKHST","FAILED Image Upload to Storage ${it.message}")
             }
 
@@ -121,17 +119,20 @@ class MainActivity : AppCompatActivity() {
     fun SaveUserToFirebaseDatabase(profileImageUrl : String){
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-
+        val pb_mainActivity = findViewById<ProgressBar>(R.id.pb_mainActivity)
         val username = findViewById<EditText>(R.id.edt_name).text.toString()
         val user = User(uid,username,profileImageUrl)
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.i("SKHST","SUCCESS Finally we saved data to Database SKHST!!!")
+                Toast.makeText(this, "Registration Success", Toast.LENGTH_SHORT).show()
+                pb_mainActivity.visibility = View.INVISIBLE
                 val intent = Intent(this,LatestMessagesActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
             .addOnFailureListener {
+                pb_mainActivity.visibility = View.INVISIBLE
                 Log.i("SKSHT","FAILED to upload to database ${it.message}")
             }
     }
