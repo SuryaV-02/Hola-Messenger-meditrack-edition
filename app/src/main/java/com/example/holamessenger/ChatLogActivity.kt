@@ -1,5 +1,6 @@
 package com.example.holamessenger
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -166,7 +167,7 @@ class ChatToItem(val text: String, val user: User,val progressBar :ProgressBar) 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         progressBar.visibility = View.VISIBLE
         viewHolder.itemView.findViewById<TextView>(R.id.tv_chatToRow).text = text
-        val uri = user.profileImageUrl
+        val uri : String = user.profileImageUrl
         val targetImageVIew = viewHolder.itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.iv_toUser)
         Picasso.get().load(uri).into(targetImageVIew)
         progressBar.visibility = View.INVISIBLE

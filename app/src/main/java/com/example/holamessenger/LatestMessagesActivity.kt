@@ -87,6 +87,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 //        if(latestMessagesMap.size==0){
 //            pb_latest_messages.visibility = View.GONE
 //        }
+        
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 isStillFetching =   true
