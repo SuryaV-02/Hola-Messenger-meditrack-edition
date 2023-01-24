@@ -16,7 +16,13 @@
     <color name="accentColorDark">#0b6c60</color>
     <color name="cloud_white">#ecf0f1</color>
     <color name="surface_white">#d9d9d9</color>
+    <color name="pale_white">#F3F3F3</color>
 
+    <color name="hint_grey">#4E4D4D</color>
+    <color name="start_gradient_background">#BFBFBF</color>
+    <color name="end_gradient_background">#EBEBEB</color>
+    <color name="round_btn_background">#EBEBEB</color>
 
+    <color name="fab_color">#FF03DAC5</color>
     <color name="absolute_black">#121212</color>
 </resources>

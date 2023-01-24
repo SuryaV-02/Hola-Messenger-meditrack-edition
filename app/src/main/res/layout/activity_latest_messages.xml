@@ -4,92 +4,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LatestMessagesActivity"
-    android:background="@color/accentColor">
+    android:background="@drawable/gradient_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/arizonia"
-        android:gravity="center_horizontal"
-        android:text="Hola Messenger"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="@color/absolute_black"
-        android:alpha="0.6"
-        app:layout_constraintBottom_toTopOf="@+id/rv_latestMessages"
+    <include
+        android:id="@+id/include"
+        layout="@layout/nav_bar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:gravity="center_horizontal"
-        android:translationZ="90dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.273"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView">
-
-        <ImageButton
-            android:id="@+id/btn_newMessage"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/search_button"
-            android:text="Messages"
-            android:translationZ="90dp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="15dp"
-            android:text="Messages"
-            android:textColor="@color/absolute_black"
-            android:textSize="20dp" />
-
-    </LinearLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_latestMessages"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/rv_rounded_bg"
-        android:paddingTop="80dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/btn_userInfo"
-        android:alpha="0.9"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/maracas"
-        android:layout_marginTop="16dp"
-        android:translationZ="90dp"
+        android:padding="8dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/abstract_profile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/pb_latest_messages"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_latestMessages"
-        app:layout_constraintEnd_toEndOf="@+id/rv_latestMessages"
-        app:layout_constraintStart_toStartOf="@+id/rv_latestMessages"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/gradient_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        tools:context=".userDetailsScreen">
 
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Green space"
+                android:textColor="@color/absolute_black"
+                android:textSize="25dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Initiate a direct chat with your connection"
+                android:textColor="@color/absolute_black"
+                android:textColorHint="@color/hint_grey"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:weightSum="12">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_latestMessages"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/rv_rounded_bg"
+                android:paddingTop="40dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ProgressBar
+                android:id="@+id/pb_latest_messages"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/rv_latestMessages"
+                app:layout_constraintEnd_toEndOf="@+id/rv_latestMessages"
+                app:layout_constraintStart_toStartOf="@+id/rv_latestMessages"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/btn_newMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start chat"
+                app:icon="@drawable/ic_baseline_add_24"
+                android:theme="@style/MyMaterialTheme"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.892"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.935" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

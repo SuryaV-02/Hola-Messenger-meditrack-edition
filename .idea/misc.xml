@@ -3,6 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/drawable/chat_balloon_bg.xml" value="0.125" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/drawable/fab_bg.xml" value="0.125" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/drawable/gradient_background.xml" value="0.125" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.125" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/drawable/rv_rounded_bg.xml" value="0.125" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_chat_log.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_latest_messages.xml" value="0.264" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_main.xml" value="0.18888888888888888" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_new_message.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_settings.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/chat_from_row.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/chat_to_row.xml" value="0.2" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/latest_messages_row.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/nav_bar.xml" value="0.1" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/user_row_new_message.xml" value="0.25" />
+        <entry key="..\:/#Jayashree/AndroidDevFiles/HolaMessenger/app/src/main/res/menu/nav_menu.xml" value="0.18958333333333333" />
         <entry key="..\:/AndroidDevFiles/HolaMessenger/app/src/main/res/layout/activity_chat_log.xml" value="0.20277777777777778" />
       </map>
     </option>

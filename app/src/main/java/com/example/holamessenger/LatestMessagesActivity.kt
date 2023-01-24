@@ -35,7 +35,7 @@ class LatestMessagesActivity : AppCompatActivity() {
         val rv_latestMessages = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_latestMessages)
         rv_latestMessages.adapter = adapter
         rv_latestMessages.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
-        val btn_newMessage = findViewById<ImageButton>(R.id.btn_newMessage)
+        val btn_newMessage = findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.btn_newMessage)
         val btn_userInfo = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.btn_userInfo)
         Log.i("SETTINGS_TAG","@latestMessage ${currentUser?.profileImageUrl}")
 

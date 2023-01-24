@@ -7,20 +7,39 @@
     tools:context=".LatestMessagesActivity"
     android:background="@color/accentColor">
 
-    <TextView
+    <LinearLayout
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/arizonia"
         android:gravity="center_horizontal"
-        android:text="Hola Messenger"
+        android:text="Meditrack"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/absolute_black"
-        android:alpha="0.6"
         app:layout_constraintBottom_toTopOf="@+id/rv_latestMessages"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:gravity="center"
+            >
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:src="@drawable/meditrack_logo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="12dp"
+                android:layout_marginLeft="5dp"
+                android:fontFamily="@font/cantora_one"
+                android:text="MediTrack"
+                android:textColor="@color/absolute_black"
+                android:textSize="20dp" />
+        </LinearLayout>
+    </LinearLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rv_latestMessages"
         android:layout_width="0dp"
@@ -45,11 +64,12 @@
             android:layout_marginVertical="5dp"
             android:background="@drawable/edit_text_bg"
             android:elevation="2dp"
-            android:ems="10"
+            android:ems="12"
+            android:gravity="center"
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="15dp"
             android:textColor="@color/absolute_black"
             android:textColorHint="@color/absolute_black"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -57,7 +77,7 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.145" />
+            app:layout_constraintVertical_bias="0.190" />
 
         <EditText
             android:id="@+id/edt_email"
@@ -66,11 +86,12 @@
             android:layout_marginVertical="5dp"
             android:background="@drawable/edit_text_bg"
             android:elevation="2dp"
-            android:ems="10"
+            android:gravity="center"
+            android:ems="12"
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="20dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="15dp"
             android:textColor="@color/absolute_black"
             android:textColorHint="@color/absolute_black"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -95,10 +116,11 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.23" />
+            app:layout_constraintVertical_bias="0.33" />
 
         <TextView
             android:id="@+id/tv_register"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back to register"
@@ -107,7 +129,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.345" />
+            app:layout_constraintVertical_bias="0.445" />
 
         <ProgressBar
             android:id="@+id/pb_loginActivity"
