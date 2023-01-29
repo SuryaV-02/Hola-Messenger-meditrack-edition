@@ -50,6 +50,7 @@ class LatestMessagesActivity : AppCompatActivity() {
         }
 
         adapter.setOnItemClickListener { item, view ->
+            view.findViewById<TextView>(R.id.tv_new_message_icon).visibility = View.INVISIBLE
             val row = item as LatestMessageRow
             val intent = Intent(this,ChatLogActivity::class.java)
             intent.putExtra(NewMessageActivity.USER_KEY,row.chatPartnerUser)
@@ -105,7 +106,8 @@ class LatestMessagesActivity : AppCompatActivity() {
                 isStillFetching =   true
                 Log.i("PB_TAG","VISIBLE @onChildcHANGEDd()")
                 pb_latest_messages.visibility = View.VISIBLE
-                val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                var chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                chatMessage?.isNew = true
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
                 isStillFetching =   false
@@ -139,6 +141,10 @@ class LatestMessagesActivity : AppCompatActivity() {
             viewHolder.itemView.findViewById<TextView>(R.id.latest_user_message)
                 .text=chatMessage.message
 
+            if(chatMessage.isNew) {
+                viewHolder.itemView.findViewById<TextView>(R.id.tv_new_message_icon)
+                    .visibility=View.VISIBLE
+            }
             val chatPartnerId : String
             if(chatMessage.fromId==FirebaseAuth.getInstance().uid){
                 chatPartnerId = chatMessage.toId

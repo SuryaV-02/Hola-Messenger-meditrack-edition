@@ -45,8 +45,8 @@ class ChatLogActivity : AppCompatActivity() {
 //        setupDummyChatLogs()
 
     }
-    class ChatMessage(val id:String,val message:String,val fromId:String,
-                      val toId:String,val timestamp:Long){
+    class ChatMessage(val id:String, val message:String, val fromId:String,
+                      val toId:String, val timestamp:Long, var isNew : Boolean = false){
         constructor() : this("","","","",-1)
     }
     fun performSendMessage(){
