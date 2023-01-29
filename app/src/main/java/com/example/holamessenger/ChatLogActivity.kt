@@ -1,7 +1,6 @@
 package com.example.holamessenger
 
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -19,6 +20,8 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import kotlinx.android.synthetic.main.activity_chat_log.*
+
+
 // COURSE COMPLETED!
 
 class ChatLogActivity : AppCompatActivity() {
@@ -97,7 +100,14 @@ class ChatLogActivity : AppCompatActivity() {
             val latestMessageToRef = FirebaseDatabase.getInstance()
                 .getReference("/latest-message/$toId/$fromId")
             latestMessageToRef.setValue(chatMessage)
+
+            val unreadMessageToRef = FirebaseDatabase.getInstance()
+                .getReference("/unread-message/$toId/$fromId")
+            latestMessageToRef.setValue(chatMessage)
+            unreadMessageToRef.setValue(chatMessage)
+
         }
+
     }
     fun listenForMessages(){
         val pb_chatLog =findViewById<ProgressBar>(R.id.pb_chatLog)
@@ -106,6 +116,7 @@ class ChatLogActivity : AppCompatActivity() {
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val toId = user?.uid
         val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
+        val unreadMessageRef = FirebaseDatabase.getInstance().getReference("/unread-message/$fromId/$toId")
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 pb_chatLog.visibility = View.VISIBLE
@@ -120,7 +131,20 @@ class ChatLogActivity : AppCompatActivity() {
                         adapter.add(ChatFromItem(chatMessage.message,toUser!!
                         ,findViewById(R.id.pb_chatLog)))
                     }
+                }
 
+                val currentChatRef = FirebaseDatabase.getInstance().getReference("/current-chat/$toId")
+                currentChatRef.get().addOnSuccessListener {
+                    val currentChatOfReceiver = it.value
+                    Log.i("SKHST_623154", "$currentChatOfReceiver")
+                    if(currentChatOfReceiver == fromId) {
+                        unreadMessageRef.removeValue().addOnSuccessListener {
+                            Log.i("SKHST_86451", "removal success from /unread-message/$fromId/$toId")
+                        }
+                    }
+                }
+                unreadMessageRef.removeValue().addOnSuccessListener {
+                    Log.i("SKHST_86451", "removal success from /unread-message/$fromId/$toId")
                 }
                 rv_chatLog.scrollToPosition(adapter.itemCount-1)
 
@@ -146,6 +170,21 @@ class ChatLogActivity : AppCompatActivity() {
         })
         pb_chatLog.visibility = View.GONE
     }
+
+    override fun onBackPressed() {
+        Log.i("SKHST_9624", "back pressed")
+        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val fromId = FirebaseAuth.getInstance().uid
+        val toId = user?.uid
+        val currentChatRef = FirebaseDatabase.getInstance().getReference("/current-chat/$toId")
+        currentChatRef.get().addOnSuccessListener {
+            Log.i("SKHST_9624", "freed up user's live chat ${it.value}")
+        }
+        currentChatRef.removeValue().addOnFailureListener {
+            Log.i("SKHST_9624", "freed up user's live chat ${it}")
+        }
+        super.onBackPressed()
+    }
 }
 
 class ChatFromItem(val text : String,val user: User,val progressBar :ProgressBar): Item<GroupieViewHolder>(){
@@ -161,6 +200,7 @@ class ChatFromItem(val text : String,val user: User,val progressBar :ProgressBar
     override fun getLayout(): Int {
         return R.layout.chat_from_row
     }
+
 }
 
 class ChatToItem(val text: String, val user: User,val progressBar :ProgressBar) : Item<GroupieViewHolder>(){

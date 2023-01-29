@@ -54,9 +54,25 @@ class LatestMessagesActivity : AppCompatActivity() {
             val row = item as LatestMessageRow
             val intent = Intent(this,ChatLogActivity::class.java)
             intent.putExtra(NewMessageActivity.USER_KEY,row.chatPartnerUser)
+            val fromId = FirebaseAuth.getInstance().uid
+            val toId = row.chatPartnerUser?.uid
+            Log.i("SKHST_63086", "$fromId -> $toId")
+
+            val unreadMessageRef = FirebaseDatabase.getInstance().getReference("/unread-message/$fromId/$toId")
+            unreadMessageRef.removeValue().addOnSuccessListener {
+                Log.i("SKHST_86451", "removal success from /unread-message/$fromId/$toId")
+            }
+
+
+            val currentChatRef = FirebaseDatabase.getInstance().getReference("/current-chat/$fromId")
+            currentChatRef.setValue(toId).addOnSuccessListener {
+                Log.i("SKHST_965212", "Settled value")
+            }
+
             startActivity(intent)
         }
         verifyUserLogin()
+        listenForUnreadMessages()
         listenForLatestMessages()
         fetchCurrentUser()
 
@@ -67,7 +83,57 @@ class LatestMessagesActivity : AppCompatActivity() {
         }, 5000)
     }
 
+    private fun listenForUnreadMessages() {
+        val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
+        val fromId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/unread-message/$fromId")
+//        if(latestMessagesMap.size==0){
+//            pb_latest_messages.visibility = View.GONE
+//        }
+
+        ref.addChildEventListener(object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                isStillFetching =   true
+                Log.i("PB_TAG","VISIBLE @onChildAdded()")
+                pb_latest_messages.visibility = View.VISIBLE
+                val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                unreadMessagesMap[snapshot.key!!] =chatMessage!!
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+                isStillFetching =   false
+                pb_latest_messages.visibility = View.GONE
+                Log.i("PB_TAG","INVISIBLE @onChildAdded()")
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                isStillFetching =   true
+                Log.i("PB_TAG","VISIBLE @onChildcHANGEDd()")
+                pb_latest_messages.visibility = View.VISIBLE
+                var chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                chatMessage?.isNew = true
+                unreadMessagesMap[snapshot.key!!] =chatMessage!!
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+                isStillFetching =   false
+                pb_latest_messages.visibility = View.GONE
+                Log.i("PB_TAG","INVISIBLE @onChildChanged()")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                this@LatestMessagesActivity.refreshRecycleViewMessages()
+            }
+
+        })
+
+    }
     val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
+    val unreadMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
 
     fun refreshRecycleViewMessages(){
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
@@ -95,7 +161,11 @@ class LatestMessagesActivity : AppCompatActivity() {
                 Log.i("PB_TAG","VISIBLE @onChildAdded()")
                 pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
+                if (unreadMessagesMap[snapshot.key!!] != null) {
+                    chatMessage?.isNew = true
+                }
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
+                Log.i("SKHST_846230", unreadMessagesMap[snapshot.key!!].toString())
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
                 isStillFetching =   false
                 pb_latest_messages.visibility = View.GONE
