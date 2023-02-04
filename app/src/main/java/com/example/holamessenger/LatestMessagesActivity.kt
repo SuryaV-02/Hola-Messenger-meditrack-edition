@@ -1,7 +1,6 @@
 package com.example.holamessenger
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -9,13 +8,16 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.example.holamessenger.ChatLogActivity.ChatMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import java.util.*
 
 class LatestMessagesActivity : AppCompatActivity() {
     companion object{
@@ -72,8 +74,14 @@ class LatestMessagesActivity : AppCompatActivity() {
             startActivity(intent)
         }
         verifyUserLogin()
+//        TODO wait for 3 seconds, until unread messages are populated in unreadMessages() map, then highlight them in LatestMessages..
         listenForUnreadMessages()
-        listenForLatestMessages()
+        Handler().postDelayed(
+            {
+                listenForLatestMessages()
+            },
+            3000
+        )
         fetchCurrentUser()
 
 
@@ -87,18 +95,15 @@ class LatestMessagesActivity : AppCompatActivity() {
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
         val fromId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/unread-message/$fromId")
-//        if(latestMessagesMap.size==0){
-//            pb_latest_messages.visibility = View.GONE
-//        }
 
         ref.addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 isStillFetching =   true
-                Log.i("PB_TAG","VISIBLE @onChildAdded()")
                 pb_latest_messages.visibility = View.VISIBLE
                 val chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 unreadMessagesMap[snapshot.key!!] =chatMessage!!
                 this@LatestMessagesActivity.refreshRecycleViewMessages()
+                Log.i("SKHST_532","new unread messg fromid=$fromId with snapshot.key as ${snapshot.key!!}")
                 isStillFetching =   false
                 pb_latest_messages.visibility = View.GONE
                 Log.i("PB_TAG","INVISIBLE @onChildAdded()")
@@ -106,7 +111,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 isStillFetching =   true
-                Log.i("PB_TAG","VISIBLE @onChildcHANGEDd()")
+                Log.i("SKHST_532","changed unread msg()")
                 pb_latest_messages.visibility = View.VISIBLE
                 var chatMessage = snapshot.getValue(ChatLogActivity.ChatMessage::class.java)
                 chatMessage?.isNew = true
@@ -132,8 +137,8 @@ class LatestMessagesActivity : AppCompatActivity() {
         })
 
     }
-    val latestMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
-    val unreadMessagesMap = HashMap<String,ChatLogActivity.ChatMessage>()
+    val latestMessagesMap = TreeMap<String,ChatLogActivity.ChatMessage>()
+    val unreadMessagesMap = TreeMap<String,ChatLogActivity.ChatMessage>()
 
     fun refreshRecycleViewMessages(){
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
@@ -150,7 +155,7 @@ class LatestMessagesActivity : AppCompatActivity() {
     private fun listenForLatestMessages() {
         val pb_latest_messages =findViewById<ProgressBar>(R.id.pb_latest_messages)
         val fromId = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-message/$fromId")
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-message/$fromId").orderByChild("timestamp")
 //        if(latestMessagesMap.size==0){
 //            pb_latest_messages.visibility = View.GONE
 //        }
@@ -164,6 +169,7 @@ class LatestMessagesActivity : AppCompatActivity() {
                 if (unreadMessagesMap[snapshot.key!!] != null) {
                     chatMessage?.isNew = true
                 }
+                Log.i("SKHST_532", unreadMessagesMap.toString())
                 latestMessagesMap[snapshot.key!!] =chatMessage!!
                 Log.i("SKHST_846230", unreadMessagesMap[snapshot.key!!].toString())
                 this@LatestMessagesActivity.refreshRecycleViewMessages()

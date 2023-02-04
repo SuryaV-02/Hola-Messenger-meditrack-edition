@@ -1,6 +1,5 @@
 package com.example.holamessenger
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -24,9 +22,18 @@ import kotlinx.android.synthetic.main.activity_chat_log.*
 
 // COURSE COMPLETED!
 
+
 class ChatLogActivity : AppCompatActivity() {
     companion object{
         val MESSAGETAG = "MessageLog"
+        class ChatMessageComparator(var base: Map<Int, ChatMessage>) :
+            Comparator<Int> {
+            // Note: this comparator imposes orderings that are inconsistent with equals.
+
+            override fun compare(o1: Int?, o2: Int?): Int {
+                return base[o1]!!.compareTo(base[o2]!!)
+            }
+        }
     }
     var toUser : User? = null
     val adapter = GroupAdapter<GroupieViewHolder>()
@@ -48,10 +55,20 @@ class ChatLogActivity : AppCompatActivity() {
 //        setupDummyChatLogs()
 
     }
+
     class ChatMessage(val id:String, val message:String, val fromId:String,
-                      val toId:String, val timestamp:Long, var isNew : Boolean = false){
+                      val toId:String, val timestamp:Long, var isNew : Boolean = false) : Comparable <ChatMessage>{
         constructor() : this("","","","",-1)
+
+        override fun compareTo(other: ChatMessage): Int {
+            return timestamp.compareTo(other.timestamp)
+        }
+
+        override fun toString(): String {
+            return timestamp.toString()
+        }
     }
+
     fun performSendMessage(){
         val edt_message = findViewById<EditText>(R.id.edt_message)
         val message = edt_message.text.toString()
@@ -109,6 +126,7 @@ class ChatLogActivity : AppCompatActivity() {
         }
 
     }
+
     fun listenForMessages(){
         val pb_chatLog =findViewById<ProgressBar>(R.id.pb_chatLog)
         pb_chatLog.visibility = View.VISIBLE
@@ -124,10 +142,12 @@ class ChatLogActivity : AppCompatActivity() {
                 if (chatMessage != null) {
                     Log.i(MESSAGETAG,"${chatMessage?.message}")
                     if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
+                        // rhs message
                         val currentUser = LatestMessagesActivity.currentUser
                         adapter.add(ChatToItem(chatMessage.message,currentUser!!
                             ,findViewById(R.id.pb_chatLog)))
                     }else{
+                        // lhs message
                         adapter.add(ChatFromItem(chatMessage.message,toUser!!
                         ,findViewById(R.id.pb_chatLog)))
                     }
@@ -143,9 +163,20 @@ class ChatLogActivity : AppCompatActivity() {
                         }
                     }
                 }
-                unreadMessageRef.removeValue().addOnSuccessListener {
-                    Log.i("SKHST_86451", "removal success from /unread-message/$fromId/$toId")
-                }
+//                val currentChatToRef = FirebaseDatabase.getInstance().getReference("/current-chat/$toId")
+//                val currentChatFromRef = FirebaseDatabase.getInstance().getReference("/current-chat/$fromId")
+//                currentChatToRef.get().addOnSuccessListener {
+//                    var currentChatOfToId = it.value
+//                    currentChatFromRef.get().addOnSuccessListener {
+//                        var currentChatOfFromId = it.value
+//                        Log.i("SKHST_623154", "$currentChatOfFromId -> $currentChatOfToId")
+//                        if(currentChatOfFromId == currentChatOfToId) {
+//                            unreadMessageRef.removeValue().addOnSuccessListener {
+//                                Log.i("SKHST_86451", "removal success from /unread-message/$fromId/$toId")
+//                            }
+//                        }
+//                    }
+//                }
                 rv_chatLog.scrollToPosition(adapter.itemCount-1)
 
                 pb_chatLog.visibility = View.GONE
@@ -170,21 +201,21 @@ class ChatLogActivity : AppCompatActivity() {
         })
         pb_chatLog.visibility = View.GONE
     }
-
     override fun onBackPressed() {
         Log.i("SKHST_9624", "back pressed")
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val fromId = FirebaseAuth.getInstance().uid
         val toId = user?.uid
-        val currentChatRef = FirebaseDatabase.getInstance().getReference("/current-chat/$toId")
+        val currentChatRef = FirebaseDatabase.getInstance().getReference("/current-chat/$fromId")
         currentChatRef.get().addOnSuccessListener {
             Log.i("SKHST_9624", "freed up user's live chat ${it.value}")
         }
         currentChatRef.removeValue().addOnFailureListener {
-            Log.i("SKHST_9624", "freed up user's live chat ${it}")
+            Log.i("SKHST_9624", "failed freed up user's live chat ${it}")
         }
         super.onBackPressed()
     }
+
 }
 
 class ChatFromItem(val text : String,val user: User,val progressBar :ProgressBar): Item<GroupieViewHolder>(){

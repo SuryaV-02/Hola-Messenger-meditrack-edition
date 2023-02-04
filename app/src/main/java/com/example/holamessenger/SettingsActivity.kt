@@ -2,7 +2,6 @@ package com.example.holamessenger
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,7 +11,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -150,6 +152,12 @@ class DownloadImageNow(var imageView: de.hdodenhof.circleimageview.CircleImageVi
     }
     override fun onPostExecute(result: Bitmap?) {
         imageView.setImageBitmap(result)
+    }
+
+    public class Employee(var name: String) {
+        override fun toString(): String {
+            return name
+        }
     }
 
 }
